@@ -1,0 +1,23 @@
+{
+  "name": "thesmakbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmakTalk/TheSmakBot.git"
+  },
+  "author": "SmakTalk94",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SmakTalk/TheSmakBot/issues"
+  },
+  "homepage": "https://github.com/SmakTalk/TheSmakBot#readme"
+}
