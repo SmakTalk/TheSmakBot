@@ -19,14 +19,14 @@ client.on('connected', onConnectedHandler);
 client.connect();
 
 function onMessageHandler (target, context, msg, self) {
-    if (self) { return; } // Ignore messages from the bot
+    if (self) { return; }
   
     const commandName = msg.trim();
 
-    if (commandName.startsWith('$')) {
+    if (commandName.startsWith('$') && context.username === 'smaktalk94') {
         if (commandName === '$about') {
             client.say(target, `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment. In fact, all I can do is print this message.`);
-            console.log(`* Executed ${commandName} command`);
+            console.log(`* Executed ${commandName}`);
         }
     }
 }
