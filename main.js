@@ -8,7 +8,10 @@ const options = {
     },
     channels: [
         process.env.CHANNEL_NAME
-    ]
+    ],
+    connection: {
+        port: process.env.PORT
+    }
 };
 
 const client = new tmi.client(options);
