@@ -2,13 +2,13 @@
   "name": "thesmakbot",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "app.js",
   "directories": {
     "example": "examples",
     "test": "test"
   },
   "scripts": {
-    "start": "node main.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
