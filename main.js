@@ -1,7 +1,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 
-const opts = {
+const options = {
     identity: {
         username: process.env.BOT_USERNAME,
         password: process.env.OAUTH_TOKEN
@@ -11,7 +11,7 @@ const opts = {
     ]
 };
 
-const client = new tmi.client(opts);
+const client = new tmi.client(options);
 
 client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
@@ -21,12 +21,14 @@ client.connect();
 function onMessageHandler (target, context, msg, self) {
     if (self) { return; } // Ignore messages from the bot
   
-    // Trim whitespace
     const commandName = msg.trim();
   
     if (commandName === '!dice') {
         const num = rollDice();
         client.say(target, `You rolled a ${num}`);
+        console.log(`* Executed ${commandName} command`);
+    } else if (commandName === '!hello') {
+        client.say(target, `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment. In fact, all I can do is print this message.`);
         console.log(`* Executed ${commandName} command`);
     } else {
         console.log(`* Unknown command ${commandName}`);
