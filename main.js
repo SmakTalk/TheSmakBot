@@ -1,7 +1,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 
-const opts = {
+const options = {
     identity: {
         username: process.env.BOT_USERNAME,
         password: process.env.OAUTH_TOKEN
@@ -11,7 +11,7 @@ const opts = {
     ]
 };
 
-const client = new tmi.client(opts);
+const client = new tmi.client(options);
 
 client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
@@ -21,7 +21,6 @@ client.connect();
 function onMessageHandler (target, context, msg, self) {
     if (self) { return; } // Ignore messages from the bot
   
-    // Trim whitespace
     const commandName = msg.trim();
   
     if (commandName === '!dice') {
