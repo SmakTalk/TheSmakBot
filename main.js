@@ -10,7 +10,7 @@ const options = {
         process.env.CHANNEL_NAME
     ],
     connection: {
-        port: process.env.PORT
+        port: process.env.PORT || 443
     }
 };
 
