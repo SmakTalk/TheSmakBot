@@ -22,12 +22,12 @@ function onMessageHandler (target, context, msg, self) {
     if (self) { return; } // Ignore messages from the bot
   
     const commandName = msg.trim();
-  
-    if (commandName === '!smakbot') {
-        client.say(target, `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment. In fact, all I can do is print this message.`);
-        console.log(`* Executed ${commandName} command`);
-    } else {
-        console.log(`* Unknown command ${commandName}`);
+
+    if (commandName.startsWith('$')) {
+        if (commandName === '$about') {
+            client.say(target, `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment. In fact, all I can do is print this message.`);
+            console.log(`* Executed ${commandName} command`);
+        }
     }
 }
 
