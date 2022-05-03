@@ -12,7 +12,7 @@ const general = function general(command, user) {
         case '$hug':
             return (args.length > 1) ? `/me ${user} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)` : `/me gives a big, friendly hug to ${user}`;
         default:
-            return `Command not found`;
+            return `${user} Command not found`;
     }
 }
 
