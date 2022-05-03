@@ -7,10 +7,14 @@ const general = function general(command, user) {
             return (args.length > 1) ? `Welcome back ${args[1]} <3` : ``;
         case '$bot':
             return `Beep boop MrDestructoid`;
+        case '$commands':
+            return `Available commands: $about, $back, $bot, $hi, $hug, and $vibing`;
         case '$hi':
             return (args.length > 1) ? `Hi ${args[1]} <3` : `Hi ${user} <3`;
         case '$hug':
             return (args.length > 1) ? `/me ${user} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)` : `/me gives a big, friendly hug to ${user}`;
+        case '$vibing':
+            return `!mw`;
         default:
             return `${user} Command not found`;
     }
