@@ -24,16 +24,16 @@ function onMessageHandler (target, context, msg, self) {
   
     const commandName = msg.trim();
 
-    if (commandName.startsWith('$') && context.username === 'smaktalk94') {
+    if (commandName.startsWith('$')) {
         switch (commandName.split(' ')[0]) {
             case '$raid':
                 command.raids(commandName);
                 break;
             case '$streamer':
-                command.streamers(commandName);
+                command.streamers(client, target, commandName);
                 break;
             default:
-                client.say(target, command.general(commandName, context['display-name']));
+                command.general(client, target, commandName, context);
         }
     }
 }

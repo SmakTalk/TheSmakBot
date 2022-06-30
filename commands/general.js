@@ -1,23 +1,40 @@
-const general = function general(command, user) {
+const Channels = require('./channels');
+
+const general = (client, target, command, context) => {
+    const channels = new Channels();
     const args = command.split(' ');
     switch (args[0]) {
         case '$about':
-            return `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment.`;
+            chatMessage(client, target, `Hello! I am SmakTalk94's personal assistant! I'm a work-in-progress, so I can't do much at the moment.`);
+            break;
+        case '$add':
+            (context['username'] === 'smaktalk94') ? chatMessage(client, target, channels.addChannel(args[1])) : chatMessage(client, target, ``);
+            break;
         case '$back':
-            return (args.length > 1) ? `Welcome back ${args[1]} <3` : ``;
+            (args.length > 1) ? chatMessage(client, target, `Welcome back ${args[1]} <3`) : chatMessage(client, target, ``);
+            break;
         case '$bot':
-            return `Beep boop MrDestructoid`;
+            chatMessage(client, target, `Beep boop MrDestructoid`);
+            break;
         case '$commands':
-            return `Available commands: $about, $back, $bot, $hi, $hug, and $vibing`;
+            chatMessage(client, target, `Available commands: $about, $back, $bot, $hi, $hug, and $list`);
+            break;
         case '$hi':
-            return (args.length > 1) ? `Hi ${args[1]} <3` : `Hi ${user} <3`;
+            (args.length > 1) ? chatMessage(client, target, `Hi ${args[1]} <3`) : chatMessage(client, target, `Hi ${context['display-name']} <3`);
+            break;
         case '$hug':
-            return (args.length > 1) ? `/me ${user} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)` : `/me gives a big, friendly hug to ${user}`;
-        case '$vibing':
-            return `!mw`;
+            (args.length > 1) ? chatMessage(client, target, `/me ${context['display-name']} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)`) : chatMessage(client, target, `/me gives a big, friendly hug to ${context['display-name']}`);
+            break;
+        case '$list':
+            (context['username'] === 'smaktalk94') ? channels.listChannels().then(list => chatMessage(client, target, `List: ${list}`)) : chatMessage(client, target, ``);
+            break;
         default:
-            return `${user} Command not found`;
+            chatMessage(client, target, `${context['display-name']} Command not found`);
     }
-}
+};
+
+const chatMessage = (client, target, message) => {
+    client.say(target, message);
+};
 
 module.exports = general;
