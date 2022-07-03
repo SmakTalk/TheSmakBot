@@ -19,8 +19,8 @@ const general = (client, target, command, context) => {
         case '$hug':
             (args.length > 1) ? client.action(target, `${context['display-name']} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)`) : client.say(target, `gives a big, friendly hug to ${context['display-name']}`);
             break;
-        default:
-            client.say(target, `${context['display-name']} Command not found`);
+        // default:
+        //     client.say(target, `${context['display-name']} Command not found`);
     }
 };
 
