@@ -19,7 +19,12 @@ const channels = (client, target, command, context) => {
                 break;
             case 'list':
                 if (authorizedUsers.includes(context['username'])) {
-                    client.say(target, `List: ${client.getChannels()}`);
+                    const list = client.getChannels();
+                    list.forEach((val, index, array) => {
+                        array[index] = val.replace('#', '');
+                    });
+                    const listString = list.toString().split(',').join(', ');
+                    client.say(target, `List: ${listString}`);
                 }
                 break;
             case 'leave':
