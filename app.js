@@ -29,8 +29,14 @@ function onMessageHandler (target, context, msg, self) {
             case '$channel':
                 command.channels(client, target, commandName, context);
                 break;
+            case '$enter':
+                command.entries(client, target, commandName, context);
+                break;
             case '$raid':
                 command.raids(commandName);
+                break;
+            case '$start':
+                command.entries(client, target, commandName, context);
                 break;
             case '$streamer':
                 command.streamers(commandName);
