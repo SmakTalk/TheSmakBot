@@ -26,11 +26,14 @@ function onMessageHandler (target, context, msg, self) {
 
     if (commandName.startsWith('$')) {
         switch (commandName.split(' ')[0]) {
+            case '$channel':
+                command.channels(client, target, commandName, context);
+                break;
             case '$raid':
                 command.raids(commandName);
                 break;
             case '$streamer':
-                command.streamers(client, target, commandName);
+                command.streamers(commandName);
                 break;
             default:
                 command.general(client, target, commandName, context);
