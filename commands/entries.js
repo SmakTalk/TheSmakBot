@@ -15,9 +15,7 @@ const entries = (client, target, command, context) => {
                     client.say(target, `${context['display-name']} You have already won a previous giveaway`);
                 } else {
                     entriesList.push(context['display-name']);
-                    console.log(entriesList);
                     client.say(target, `${context['display-name']} Your name has been successfully entered`);
-                    // add to API
                 }
             } else {
                 client.say(target, `${context['display-name']} There is no giveaway currently in progress`);
@@ -28,7 +26,7 @@ const entries = (client, target, command, context) => {
                 console.log('Previous winners: ' + winnersList);
                 isOpen = true;
                 client.say(target, `Giveaway started`);
-                setTimeout(drawWinner, 60000, client, target);
+                setTimeout(drawWinner, 600000, client, target);
             }
             break;
     }
@@ -36,10 +34,11 @@ const entries = (client, target, command, context) => {
 
 const drawWinner = (client, target) => {
     const winner = entriesList[Math.floor(Math.random() * entriesList.length)];
-    console.log('winner selected!: ' + winner);
+    console.log('Entries: ' + entriesList);
     if (winner) {
         client.say(target, `Congratulations ${winner}! You have been selected!`);
         winnersList.push(winner);
+        console.log('Winners: ' + winnersList);
     } else {
         client.say(target, `No one entered the giveaway`);
     }
