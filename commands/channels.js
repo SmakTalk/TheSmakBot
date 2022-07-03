@@ -1,10 +1,12 @@
+const authorizedUsers = require('../constants/authorized');
+
 const channels = (client, target, command, context) => {
     const args = command.split(' ');
     if (args.length > 1) {
         switch(args[1]) {
             case 'add':
             case 'join':
-                if (context['username'] === 'smaktalk94') {
+                if (authorizedUsers.includes(context['username'])) {
                     if (args[2]) {
                         client.join(args[2]).then((val) => {
                             const joinedChannel = val[0].replace('#', '');
@@ -16,14 +18,14 @@ const channels = (client, target, command, context) => {
                 }
                 break;
             case 'list':
-                if (context['username'] === 'smaktalk94') {
+                if (authorizedUsers.includes(context['username'])) {
                     client.say(target, `List: ${client.getChannels()}`);
                 }
                 break;
             case 'leave':
             case 'part':
             case 'remove':
-                if (context['username'] === 'smaktalk94') {
+                if (authorizedUsers.includes(context['username'])) {
                     if (args[2]) {
                         client.part(args[2]).then((val) => {
                             const partedChannel = val[0].replace('#', '');
