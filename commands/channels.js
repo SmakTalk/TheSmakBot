@@ -32,10 +32,13 @@ const channels = (client, target, command, context) => {
             case 'remove':
                 if (authorizedUsers.includes(context['username'])) {
                     if (args[2]) {
-                        client.part(args[2]).then((val) => {
-                            const partedChannel = val[0].replace('#', '');
-                            client.say(target, `I have left ${partedChannel}`);
-                        });
+                        const list = client.getChannels();
+                        if (list.includes('#' + args[2].toLowerCase())) {
+                            client.part(args[2]).then((val) => {
+                                const partedChannel = val[0].replace('#', '');
+                                client.say(target, `I have left ${partedChannel}`);
+                            });
+                        }
                     } else {
                         client.say(target, `${context['display-name']} You forgot to enter a channel name FailFish`);
                     }
