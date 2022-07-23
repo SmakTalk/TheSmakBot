@@ -2,7 +2,7 @@ const authorizedUsers = require('../constants/authorized');
 
 let entriesList = [];
 let isOpen = false;
-let winnersList = ['philVelo','GillianHayek','chemjanet','StewartHayek','eroomekim','CoverTimePete','kilozebra','sasavame','Cptcrunch85','alynbart','mainemammie','bitemeimklingon69','BooksBrewsAndBooze','steamin_clevelan','theqil','ofucc','PLUMPKINPLUMPS','AnnArborite','hoolery_schmoolery','penguin_superhero','lisawarrenserenityharp'];
+let winnersList = [];
 
 const entries = (client, target, command, context) => {
     const args = command.split(' ');
@@ -39,7 +39,7 @@ const drawWinner = (client, target) => {
     const winner = entriesList[Math.floor(Math.random() * entriesList.length)];
     console.log('Entries: ' + entriesList);
     if (winner) {
-        client.say(target, `Congratulations ${winner}! You have been selected! Send a whisper to either IslandVibingPresents or IslandAdjacent so they know where to send you your prize!`);
+        client.say(target, `Congratulations ${winner}! You have been selected!`);
         winnersList.push(winner);
         console.log('Winners: ' + winnersList);
     } else {
