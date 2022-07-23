@@ -51,6 +51,17 @@ const entries = (client, target, command, context) => {
                                 client.say(target, `${context['display-name']} There is no drawing currently in progress`);
                             }
                             break;
+                        case 'cancel':
+                            if (isOpen) {
+                                if (drawing) {
+                                    clearTimeout(drawing);
+                                }
+                                isOpen = false;
+                                client.say(target, `${context['display-name']} The drawing has been canceled`);
+                            } else {
+                                client.say(target, `${context['display-name']} There is no drawing currently in progress`);
+                            }
+                            break;
                         case 'redraw':
                             drawWinner(client, target);
                             break;
