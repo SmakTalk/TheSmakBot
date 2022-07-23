@@ -1,6 +1,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 const command = require('./commands');
+const twitchapi = require('./api/twitchapi');
 
 const options = {
     identity: {
@@ -19,6 +20,8 @@ client.on('connected', onConnectedHandler);
 
 client.connect();
 
+// twitchapi();
+
 function onMessageHandler (target, context, msg, self) {
     if (self) { return; }
   
@@ -35,7 +38,7 @@ function onMessageHandler (target, context, msg, self) {
             case '$raid':
                 command.raids(commandName);
                 break;
-            case '$start':
+            case '$drawing':
                 command.entries(client, target, commandName, context);
                 break;
             case '$streamer':
