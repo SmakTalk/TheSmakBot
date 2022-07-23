@@ -1,7 +1,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 const command = require('./commands');
-const twitchapi = require('./api/twitchapi');
+// const twitchapi = require('./api/twitchapi');
 
 const options = {
     identity: {
