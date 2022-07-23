@@ -1,34 +1,69 @@
 const authorizedUsers = require('../constants/authorized');
 
+let drawing;
 let entriesList = [];
 let isOpen = false;
-let winnersList = ['philVelo','GillianHayek','chemjanet','StewartHayek','eroomekim','CoverTimePete','kilozebra','sasavame','Cptcrunch85','alynbart','mainemammie','bitemeimklingon69','BooksBrewsAndBooze','steamin_clevelan','theqil','ofucc','PLUMPKINPLUMPS','AnnArborite','hoolery_schmoolery','penguin_superhero','lisawarrenserenityharp'];
+let winnersList = [];
 
 const entries = (client, target, command, context) => {
     const args = command.split(' ');
     switch (args[0]) {
         case '$enter':
             if (isOpen) {
-                if (entriesList.includes(context['display-name'])) {
-                    client.say(target, `${context['display-name']} You have already entered the current giveaway`);
-                } else if (winnersList.includes(context['display-name'])) {
-                    client.say(target, `${context['display-name']} You have already won a previous giveaway`);
+                const entry = (args[1] && (context.badges.hasOwnProperty('moderator') || context.badges.hasOwnProperty('broadcaster'))) ? args[1] : context['display-name'];
+                if (entriesList.includes(entry)) {
+                    client.say(target, (args[1]) ? `${entry} has already entered the current drawing` : `${entry} You have already entered the current drawing`);
+                } else if (winnersList.includes(entry)) {
+                    client.say(target, (args[1]) ? `${entry} has already won a previous drawing` : `${entry} You have already won a previous drawing`);
                 } else {
-                    entriesList.push(context['display-name']);
-                    client.say(target, `${context['display-name']} Your name has been successfully entered`);
+                    entriesList.push(entry);
+                    client.say(target, (args[1]) ? `${entry} has been successfully entered` : `${entry} Your name has been successfully entered`);
                 }
             } else {
-                client.say(target, `${context['display-name']} There is no giveaway currently in progress`);
+                client.say(target, `${context['display-name']} There is no drawing currently in progress`);
             }
             break;
-        case '$start':
-            if (authorizedUsers.includes(context['username'])) {
-                if (isOpen) {
-                    client.say(target, `${context['display-name']} There is a giveaway already in progress`);
+        case '$drawing':
+            if (context.badges.hasOwnProperty('moderator') || context.badges.hasOwnProperty('broadcaster')) {
+                if (args[1]) {
+                    switch (args[1]) {
+                        case 'start':
+                            entriesList = [];
+                            const time = (args[2] && Number.isInteger(parseInt(args[2]))) ? args[2] * 60000 : 0;
+                            if (isOpen) {
+                                client.say(target, `${context['display-name']} There is a drawing already in progress`);
+                            } else {
+                                isOpen = true;
+                                client.say(target, `A new drawing started! Enter for a chance to win by typing $enter in the chat!`);
+                                if (time > 0) {
+                                    client.say(target, `A name will be randomly drawn in ${time / 60000} ${(time === 60000) ? 'minute' : 'minutes'}`);
+                                    drawing = setTimeout(drawWinner, time, client, target);
+                                }
+                            }
+                            break;
+                        case 'stop':
+                            if (isOpen) {
+                                if (drawing) {
+                                    clearTimeout(drawing);
+                                }
+                                drawWinner(client, target);
+                            } else {
+                                client.say(target, `${context['display-name']} There is no drawing currently in progress`);
+                            }
+                            break;
+                        case 'redraw':
+                            drawWinner(client, target);
+                            break;
+                        case 'reset':
+                            entriesList = [];
+                            winnersList = [];
+                            client.say(target, `${context['display-name']} The list of previous winners has been cleared`);
+                            break;
+                        default:
+                            //TODO: list drawing options
+                    }
                 } else {
-                    isOpen = true;
-                    client.say(target, `A new giveaway started! Enter for a chance to win by typing $enter in the chat!`);
-                    setTimeout(drawWinner, 600000, client, target);
+                    //TODO: list drawing arguments
                 }
             }
             break;
@@ -39,14 +74,14 @@ const drawWinner = (client, target) => {
     const winner = entriesList[Math.floor(Math.random() * entriesList.length)];
     console.log('Entries: ' + entriesList);
     if (winner) {
-        client.say(target, `Congratulations ${winner}! You have been selected! Send a whisper to either IslandVibingPresents or IslandAdjacent so they know where to send you your prize!`);
+        client.say(target, `Congratulations ${winner}! You have been selected!`);
         winnersList.push(winner);
+        entriesList.splice(entriesList.indexOf(winner), 1);
         console.log('Winners: ' + winnersList);
     } else {
         client.say(target, `No one entered the giveaway`);
     }
     isOpen = false;
-    entriesList = [];
 };
 
 module.exports = entries;
