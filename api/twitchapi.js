@@ -5,7 +5,7 @@ const https = require('https');
 const { RefreshingAuthProvider } = require('@twurple/auth');
 const { PubSubClient } = require('@twurple/pubsub');
 
-const whisperChat = async (client, target) => {
+const whisperChat = async (client) => {
     const authProvider = await twitchAuth();
 
     const pubSubClient = new PubSubClient();

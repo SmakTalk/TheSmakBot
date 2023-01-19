@@ -10,6 +10,7 @@ const smakapi = (path, method, data = null) => {
             path: path,
             method: method,
             headers: {
+                'Content-Type': 'application/json',
                 'Secret': process.env.SECRET
             }
         };
