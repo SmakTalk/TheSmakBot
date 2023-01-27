@@ -7,6 +7,7 @@ const { PubSubClient } = require('@twurple/pubsub');
 
 const whisperChat = async (client) => {
     const authProvider = await twitchAuth();
+    authProvider.refresh();
 
     const pubSubClient = new PubSubClient();
     const userId = await pubSubClient.registerUserListener(authProvider);
