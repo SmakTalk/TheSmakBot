@@ -22,7 +22,7 @@ client.connect();
 
 whisperChat(client);
 
-function onMessageHandler (target, context, msg, self) {
+async function onMessageHandler (target, context, msg, self) {
     if (self) { return; }
   
     const commandName = msg.trim();
@@ -34,6 +34,9 @@ function onMessageHandler (target, context, msg, self) {
                 break;
             case '$enter':
                 command.entries(client, target, commandName, context);
+                break;
+            case '$latest':
+                await command.latest(client, target, commandName, context);
                 break;
             case '$raid':
                 command.raids(commandName);
