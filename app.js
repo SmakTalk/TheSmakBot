@@ -1,7 +1,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 const command = require('./commands');
-const whisperChat = require('./api/twitchapi');
+// const whisperChat = require('./api/twitchapi');
 
 const options = {
     identity: {
@@ -20,7 +20,7 @@ client.on('connected', onConnectedHandler);
 
 client.connect();
 
-whisperChat(client);
+// whisperChat(client);
 
 async function onMessageHandler (target, context, msg, self) {
     if (self) { return; }
