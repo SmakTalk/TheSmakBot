@@ -5,6 +5,7 @@ const channels = (client, target, command, context) => {
     if (args.length > 1) {
         switch(args[1]) {
             case 'add':
+            case 'enter':
             case 'join':
                 if (authorizedUsers.includes(context['username'])) {
                     if (args[2]) {
@@ -15,8 +16,6 @@ const channels = (client, target, command, context) => {
                     } else {
                         client.say(target, `${context['display-name']} You forgot to enter a channel name FailFish`);
                     }
-                } else {
-                    client.say(target, 'Something is broken');
                 }
                 break;
             case 'list':
@@ -27,14 +26,11 @@ const channels = (client, target, command, context) => {
                     });
                     const listString = list.toString().split(',').join(', ');
                     client.say(target, `List: ${listString}`);
-                } else {
-                    client.say(target, 'Something is broken');
                 }
                 break;
             case 'leave':
             case 'part':
             case 'remove':
-                console.log('in here');
                 if (authorizedUsers.includes(context['username'])) {
                     if (args[2]) {
                         const list = client.getChannels();
@@ -47,13 +43,11 @@ const channels = (client, target, command, context) => {
                     } else {
                         client.say(target, `${context['display-name']} You forgot to enter a channel name FailFish`);
                     }
-                } else {
-                    client.say(target, 'Something is broken');
                 }
                 break;
         }
     } else {
-        client.say(target, `Argument missing. Available arguments: add/join, list, leave/part/remove`);
+        client.say(target, `Argument missing. Available arguments: add/enter/join, list, leave/part/remove`);
     }
 };
 
