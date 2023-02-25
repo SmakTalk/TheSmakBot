@@ -5,10 +5,7 @@ const https = require('https');
 const { RefreshingAuthProvider } = require('@twurple/auth');
 const { PubSubClient } = require('@twurple/pubsub');
 
-const whisperChat = async (client) => {
-    const authProvider = await twitchAuth();
-    authProvider.refresh();
-
+const whisperChat = async (authProvider, client) => {
     const pubSubClient = new PubSubClient();
     const userId = await pubSubClient.registerUserListener(authProvider);
 
@@ -16,7 +13,7 @@ const whisperChat = async (client) => {
         if (message.text !== undefined && message.senderDisplayName === 'SmakTalk94') {
             const messageArr = message.text.split(/: (.*)/s);
             const target = await getTarget(messageArr[0]);
-            const list = client.getChannels();
+            const list = client.currentChannels;
             if (list.includes(target)) {
                 client.say(target, messageArr[1]);
             } else {
@@ -26,24 +23,6 @@ const whisperChat = async (client) => {
             }
         }
     });
-};
-
-const twitchAuth = async () => {
-    const clientId = process.env.CLIENT_ID;
-    const clientSecret = process.env.CLIENT_SECRET;
-
-    const tokenData = JSON.parse(await smakapi('/token', http.GET));
-
-    const authProvider = new RefreshingAuthProvider(
-        {
-            clientId,
-            clientSecret,
-            onRefresh: async newTokenData => await smakapi('/token', http.POST, newTokenData)
-        },
-        tokenData
-    );
-
-    return authProvider;
 };
 
 const getTarget = async (alias) => {
