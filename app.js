@@ -40,9 +40,6 @@ const main = async () => {
                 case '$enter':
                     command.entries(client, channel, commandName, msg.userInfo);
                     break;
-                case '$latest':
-                    await command.latest(client, channel, commandName, msg.userInfo);
-                    break;
                 case '$raid':
                     command.raids(commandName);
                     break;
