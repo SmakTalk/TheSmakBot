@@ -2,21 +2,17 @@ require('dotenv').config();
 const http = require('../constants/http.js');
 const smakapi = require('./smakapi.js');
 const https = require('https');
-const { RefreshingAuthProvider } = require('@twurple/auth');
 const { PubSubClient } = require('@twurple/pubsub');
 
-const whisperChat = async (client) => {
-    const authProvider = await twitchAuth();
-    authProvider.refresh();
+const whisperChat = async (authProvider, client) => {
+    const userId = process.env.USER_ID;
+    const pubSubClient = new PubSubClient({ authProvider });
 
-    const pubSubClient = new PubSubClient();
-    const userId = await pubSubClient.registerUserListener(authProvider);
-
-    await pubSubClient.onWhisper(userId, async (message) => {
+    pubSubClient.onWhisper(userId, async (message) => {
         if (message.text !== undefined && message.senderDisplayName === 'SmakTalk94') {
             const messageArr = message.text.split(/: (.*)/s);
             const target = await getTarget(messageArr[0]);
-            const list = client.getChannels();
+            const list = client.currentChannels;
             if (list.includes(target)) {
                 client.say(target, messageArr[1]);
             } else {
@@ -26,24 +22,10 @@ const whisperChat = async (client) => {
             }
         }
     });
-};
 
-const twitchAuth = async () => {
-    const clientId = process.env.CLIENT_ID;
-    const clientSecret = process.env.CLIENT_SECRET;
-
-    const tokenData = JSON.parse(await smakapi('/token', http.GET));
-
-    const authProvider = new RefreshingAuthProvider(
-        {
-            clientId,
-            clientSecret,
-            onRefresh: async newTokenData => await smakapi('/token', http.POST, newTokenData)
-        },
-        tokenData
-    );
-
-    return authProvider;
+    pubSubClient.onListenError((handler, error, userInitiated) => {
+        console.log(error);
+    });
 };
 
 const getTarget = async (alias) => {
@@ -54,7 +36,7 @@ const getTarget = async (alias) => {
     return target;
 };
 
-const sendWhisper = async (message, token, userId = 499005819) => {
+const sendWhisper = async (message, token, userId = process.env.USER_ID) => {
     const data = JSON.stringify({
         'message': message
     });

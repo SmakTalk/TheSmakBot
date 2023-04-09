@@ -22,9 +22,10 @@
   },
   "homepage": "https://github.com/SmakTalk/TheSmakBot#readme",
   "dependencies": {
-    "@twurple/api": "^5.3.3",
-    "@twurple/auth": "^5.3.3",
-    "@twurple/pubsub": "^5.3.3",
+    "@twurple/api": "^6.0.4",
+    "@twurple/auth": "^6.0.4",
+    "@twurple/chat": "^6.0.4",
+    "@twurple/pubsub": "^6.0.4",
     "dotenv": "^16.0.0",
     "tmi.js": "^1.8.5"
   }
