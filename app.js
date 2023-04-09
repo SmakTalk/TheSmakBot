@@ -55,6 +55,12 @@ const main = async () => {
         }
     });
 
+    client.onRitual((channel, user, ritualInfo, msg) => {
+        if (ritualInfo.ritualName === 'new_chatter') {
+            command.auto('new', client, channel, user);
+        }
+    });
+
     client.onAuthenticationSuccess(() => {
         console.log('Authentication successful!');
     });
