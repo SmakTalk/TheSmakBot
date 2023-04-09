@@ -1,6 +1,6 @@
 const authorizedUsers = require('../constants/authorized');
 
-const channels = (client, target, command, context) => {
+const channels = (client, channel, command, context) => {
     const args = command.split(' ');
     if (args.length > 1) {
         switch(args[1]) {
@@ -11,10 +11,10 @@ const channels = (client, target, command, context) => {
                     if (args[2]) {
                         client.join(args[2]).then((val) => {
                             const joinedChannel = val[0].replace('#', '');
-                            client.say(target, `I have joined ${joinedChannel}`);
+                            client.say(channel, `I have joined ${joinedChannel}`);
                         });
                     } else {
-                        client.say(target, `${context.displayName} You forgot to enter a channel name FailFish`);
+                        client.say(channel, `${context.displayName} You forgot to enter a channel name FailFish`);
                     }
                 }
                 break;
@@ -25,7 +25,7 @@ const channels = (client, target, command, context) => {
                         array[index] = val.replace('#', '');
                     });
                     const listString = list.toString().split(',').join(', ');
-                    client.say(target, `List: ${listString}`);
+                    client.say(channel, `List: ${listString}`);
                 }
                 break;
             case 'leave':
@@ -37,17 +37,17 @@ const channels = (client, target, command, context) => {
                         if (list.includes('#' + args[2].toLowerCase())) {
                             client.part(args[2]).then((val) => {
                                 const partedChannel = val[0].replace('#', '');
-                                client.say(target, `I have left ${partedChannel}`);
+                                client.say(channel, `I have left ${partedChannel}`);
                             });
                         }
                     } else {
-                        client.say(target, `${context.displayName} You forgot to enter a channel name FailFish`);
+                        client.say(channel, `${context.displayName} You forgot to enter a channel name FailFish`);
                     }
                 }
                 break;
         }
     } else {
-        client.say(target, `Argument missing. Available arguments: add/enter/join, list, leave/part/remove`);
+        client.say(channel, `Argument missing. Available arguments: add/enter/join, list, leave/part/remove`);
     }
 };
 
