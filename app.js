@@ -6,7 +6,7 @@ const { EventSubWsListener } = require('@twurple/eventsub-ws');
 const smakapi = require('./api/smakapi.js');
 // const whisperChat = require('./api/twitchapi.js');
 const command = require('./commands');
-const Autogreet = require('./constants/autogreet.js');
+const Autochat = require('./constants/autochat.js');
 const http = require('./constants/http.js');
 let { greetedUsers, raiders } = require('./constants/users.js');
 
@@ -35,46 +35,56 @@ const main = async () => {
 
     // whisperChat(authProvider, client);
 
-    client.onMessage(async (channel, user, text, msg) => {
-        if (user === 'thesmakbot') { return; }
-      
+    client.onJoin((channel, user) => {
+        if (channel !== '#smaktalk94') {
+            const joinedChannel = channel.replace('#', '');
+            command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
+        }
+    });
+
+    client.onPart((channel, user) => {
+        const partedChannel = channel.replace('#', '');
+        command.auto(Autochat.PARTED, client, '#smaktalk94', partedChannel);
+    });
+    
+    client.onMessage(async (channel, user, text, msg) => {      
         const context = msg.userInfo;
         const commandName = text.trim();
+
+        if (context.displayName === 'TheSmakBot') { return; }
     
         if (commandName.startsWith('$')) {
             switch (commandName.split(' ')[0]) {
                 case '$channel':
-                    command.channels(client, channel, commandName, context);
+                    await command.channels(client, channel, commandName, context);
                     break;
+                case '$drawing':
                 case '$enter':
                     command.entries(client, channel, commandName, context);
                     break;
                 case '$raid':
                     command.raids(commandName);
                     break;
-                case '$drawing':
-                    command.entries(client, channel, commandName, context);
-                    break;
                 case '$streamer':
                     command.streamers(commandName);
                     break;
                 default:
-                    command.general(client, channel, commandName, context);
+                    await command.general(client, channel, commandName, context);
             }
         }
 
-        if (user !== 'StreamElements') {
+        if (context.displayName !== 'StreamElements' && context.displayName !== process.env.CHANNEL_NAME) {
             if (raiders.includes(context.displayName)) {
-                command.auto(Autogreet.RAIDER, client, channel, context.displayName);
+                command.auto(Autochat.RAIDER, client, channel, context.displayName);
             } else if (greetedUsers[context.displayName] !== 1) {
-                command.auto(Autogreet.FIRST, client, channel, context.displayName);
+                command.auto(Autochat.FIRST, client, channel, context.displayName);
             }
         }
     });
 
     client.onRitual((channel, user, ritualInfo, msg) => {
         if (ritualInfo.ritualName === 'new_chatter') {
-            command.auto(Autogreet.NEW, client, channel, context.displayName);
+            command.auto(Autochat.NEW, client, channel, context.displayName);
         }
     });
 
