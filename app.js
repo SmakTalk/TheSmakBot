@@ -46,6 +46,16 @@ const main = async () => {
         const partedChannel = channel.replace('#', '');
         command.auto(Autochat.PARTED, client, '#smaktalk94', partedChannel);
     });
+
+    listener.onChannelRaidTo(userId, e => {
+        raiders.push(e.raidingBroadcasterDisplayName);
+    });
+
+    client.onRitual((channel, user, ritualInfo, msg) => {
+        if (ritualInfo.ritualName === 'new_chatter') {
+            command.auto(Autochat.NEW, client, channel, context.displayName);
+        }
+    });
     
     client.onMessage(async (channel, user, text, msg) => {      
         const context = msg.userInfo;
@@ -82,12 +92,6 @@ const main = async () => {
         }
     });
 
-    client.onRitual((channel, user, ritualInfo, msg) => {
-        if (ritualInfo.ritualName === 'new_chatter') {
-            command.auto(Autochat.NEW, client, channel, context.displayName);
-        }
-    });
-
     client.onAuthenticationSuccess(() => {
         console.log('Authentication successful!');
     });
@@ -100,10 +104,6 @@ const main = async () => {
 
     listener.onStreamOffline(userId, e => {
         greetedUsers = {};
-    });
-
-    listener.onChannelRaidTo(userId, e => {
-        raiders.push(e.raidingBroadcasterDisplayName);
     });
 };
 
