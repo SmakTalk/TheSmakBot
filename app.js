@@ -52,7 +52,7 @@ const main = async () => {
     });
 
     client.onRitual((channel, user, ritualInfo, msg) => {
-        if (ritualInfo.ritualName === 'new_chatter') {
+        if (channel === '#smaktalk94' && ritualInfo.ritualName === 'new_chatter') {
             command.auto(Autochat.NEW, client, channel, context.displayName);
         }
     });
@@ -83,7 +83,7 @@ const main = async () => {
             }
         }
 
-        if (context.displayName !== 'StreamElements' && context.displayName !== process.env.CHANNEL_NAME) {
+        if (channel === '#smaktalk94' && context.displayName !== 'StreamElements' && context.displayName !== process.env.CHANNEL_NAME) {
             if (raiders.includes(context.displayName)) {
                 command.auto(Autochat.RAIDER, client, channel, context.displayName);
             } else if (greetedUsers[context.displayName] !== 1) {
