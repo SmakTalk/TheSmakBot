@@ -10,7 +10,7 @@ const entries = (client, channel, command, context) => {
     switch (args[0]) {
         case '$enter':
             if (isOpen) {
-                const entry = (args[1] && (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName))) ? args[1] : context.displayName;
+                const entry = (args[1] && (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName))) ? formatEntry(args[1]) : context.displayName;
                 if (entriesList.includes(entry)) {
                     client.say(channel, (args[1]) ? `${entry} has already entered the current drawing` : `${entry} You have already entered the current drawing`);
                 } else if (winnersList.includes(entry)) {
@@ -92,6 +92,10 @@ const entries = (client, channel, command, context) => {
             }
             break;
     }
+};
+
+const formatEntry = (entry) => {
+    return (entry.startsWith('@')) ? entry.substring(1) : entry;
 };
 
 const drawWinner = (client, target) => {
