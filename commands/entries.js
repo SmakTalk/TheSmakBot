@@ -2,7 +2,7 @@ const authorizedUsers = require('../constants/authorized');
 
 let drawing;
 let entriesList = [];
-let isOpen = false;
+let isOpen = false; // drawing open for entries
 let winnersList = [];
 
 const entries = (client, channel, command, context) => {
@@ -10,7 +10,7 @@ const entries = (client, channel, command, context) => {
     switch (args[0]) {
         case '$enter':
             if (isOpen) {
-                const entry = (args[1] && (context.badges.has('moderator') || context.badges.has('broadcaster'))) ? args[1] : context.displayName;
+                const entry = (args[1] && (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName))) ? formatEntry(args[1]) : context.displayName;
                 if (entriesList.includes(entry)) {
                     client.say(channel, (args[1]) ? `${entry} has already entered the current drawing` : `${entry} You have already entered the current drawing`);
                 } else if (winnersList.includes(entry)) {
@@ -24,7 +24,7 @@ const entries = (client, channel, command, context) => {
             }
             break;
         case '$drawing':
-            if (context.badges.hasOwnProperty('moderator') || context.badges.hasOwnProperty('broadcaster')) {
+            if (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName)) {
                 if (args[1]) {
                     switch (args[1]) {
                         case 'start':
@@ -70,6 +70,19 @@ const entries = (client, channel, command, context) => {
                             winnersList = [];
                             client.say(channel, `@${context.displayName} The list of previous winners has been cleared`);
                             break;
+                        case 'winners':
+                            if (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName)) {
+                                if (winnersList.length > 0) {
+                                    let listOfWinners = '';
+                                    winnersList.forEach((val, i) => {
+                                        listOfWinners += (i === 0) ? `${val}` : `, ${val}`;
+                                    });
+                                    client.say(channel, `Winners: ${listOfWinners}`);
+                                } else {
+                                    client.say(channel, `The list of previous winners is empty`);
+                                }
+                            }
+                            break;
                         default:
                             //TODO: list drawing options
                     }
@@ -81,11 +94,15 @@ const entries = (client, channel, command, context) => {
     }
 };
 
+const formatEntry = (entry) => {
+    return (entry.startsWith('@')) ? entry.substring(1) : entry;
+};
+
 const drawWinner = (client, target) => {
     const winner = entriesList[Math.floor(Math.random() * entriesList.length)];
     console.log('Entries: ' + entriesList);
     if (winner) {
-        client.say(target, `Congratulations @${winner}! You've won!`);
+        client.say(target, `Congratulations @${winner}! You've won the giveaway!`);
         winnersList.push(winner);
         entriesList.splice(entriesList.indexOf(winner), 1);
         console.log('Winners: ' + winnersList);
