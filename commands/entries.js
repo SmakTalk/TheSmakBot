@@ -70,6 +70,19 @@ const entries = (client, channel, command, context) => {
                             winnersList = [];
                             client.say(channel, `@${context.displayName} The list of previous winners has been cleared`);
                             break;
+                        case 'winners':
+                            if (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName)) {
+                                if (winnersList.length > 0) {
+                                    let listOfWinners = '';
+                                    winnersList.forEach((val, i) => {
+                                        listOfWinners += (i === 0) ? `${val}` : `, ${val}`;
+                                    });
+                                    client.say(channel, `Winners: ${listOfWinners}`);
+                                } else {
+                                    client.say(channel, `The list of previous winners is empty`);
+                                }
+                            }
+                            break;
                         default:
                             //TODO: list drawing options
                     }
