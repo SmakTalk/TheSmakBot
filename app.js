@@ -50,6 +50,7 @@ const main = async () => {
     client.onAuthenticationSuccess(() => {
         channels['#smaktalk94'] = true;
         console.log('Authentication successful!');
+        console.log('------------');
     });
 
     client.onAuthenticationFailure((text, retryCount) => {
@@ -74,6 +75,7 @@ const main = async () => {
     client.onJoinFailure((channel, reason) => {
         console.log(`Failed to join ${channel} for following reason:`);
         console.log(reason);
+        console.log('------------');
     });
     
     client.onMessage(async (channel, user, text, msg) => {
@@ -120,6 +122,7 @@ const main = async () => {
     client.onMessageFailed((channel, reason) => {
         console.log(`Failed to message in ${channel.substring(1)}'s chat for following reason:`);
         console.log(reason);
+        console.log('------------');
     });
 
     client.onPart((channel, user) => {
@@ -135,6 +138,7 @@ const main = async () => {
 
     process.on('uncaughtException', error => {
         console.log(error);
+        console.log('------------');
     });
 };
 
