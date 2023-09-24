@@ -107,6 +107,11 @@ const main = async () => {
         console.log(reason);
     });
 
+    client.onMessageFailed((channel, reason) => {
+        console.log(`Failed to message in ${channel}'s chat for following reason:`);
+        console.log(reason);
+    });
+
     listener.onStreamOffline(userId, e => {
         greetedUsers = {};
     });
