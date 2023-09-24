@@ -57,7 +57,7 @@ const main = async () => {
         }
     });
     
-    client.onMessage(async (channel, user, text, msg) => {      
+    client.onMessage((channel, user, text, msg) => {      
         const context = msg.userInfo;
         const commandName = text.trim();
 
@@ -66,7 +66,7 @@ const main = async () => {
         if (commandName.startsWith('$')) {
             switch (commandName.split(' ')[0]) {
                 case '$channel':
-                    await command.channels(client, channel, commandName, context);
+                    command.channels(client, channel, commandName, context);
                     break;
                 case '$drawing':
                 case '$enter':
@@ -79,7 +79,7 @@ const main = async () => {
                     command.streamers(commandName);
                     break;
                 default:
-                    await command.general(client, channel, commandName, context);
+                    command.general(client, channel, commandName, context);
             }
         }
 
