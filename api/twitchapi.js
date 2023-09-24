@@ -8,16 +8,16 @@ const whisperChat = async (authProvider, client) => {
     const userId = process.env.USER_ID;
     const pubSubClient = new PubSubClient({ authProvider });
 
-    pubSubClient.onWhisper(userId, async (message) => {
+    pubSubClient.onWhisper(userId, (message) => {
         if (message.text !== undefined && message.senderDisplayName === 'SmakTalk94') {
             const messageArr = message.text.split(/: (.*)/s);
-            const target = await getTarget(messageArr[0]);
+            const target = getTarget(messageArr[0]);
             const list = client.currentChannels;
             if (list.includes(target)) {
                 client.say(target, messageArr[1]);
             } else {
                 const message = `I have not joined ${target.slice(1)}'s chat`;
-                const tokenObj = await authProvider._doGetAccessToken();
+                const tokenObj = authProvider._doGetAccessToken();
                 sendWhisper(message, tokenObj.accessToken);
             }
         }

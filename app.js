@@ -15,6 +15,10 @@ const clientSecret = process.env.CLIENT_SECRET;
 
 const main = async () => {
     const userId = process.env.USER_ID;
+    const channels = {};
+    let emoteOnlyMode = false;
+    let followerOnlyMode = false;
+    let subscriberOnlyMode = false;
 
     const authProvider = new RefreshingAuthProvider(
         {
@@ -24,62 +28,84 @@ const main = async () => {
         }
     );
     authProvider.addUser(userId, JSON.parse(await smakapi('/token', http.GET)), ['chat']);
+
     const apiClient = new ApiClient({ authProvider });
 
     const listener = new EventSubWsListener({ apiClient });
     listener.start();
 
-    const client = new ChatClient({ authProvider, channels: [ process.env.CHANNEL_NAME ] });
-
-    client.connect();
-
-    // whisperChat(authProvider, client);
-
-    client.onJoin((channel, user) => {
-        if (channel !== '#smaktalk94') {
-            const joinedChannel = channel.replace('#', '');
-            command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
-        }
-    });
-
-    client.onPart((channel, user) => {
-        const partedChannel = channel.replace('#', '');
-        command.auto(Autochat.PARTED, client, '#smaktalk94', partedChannel);
-    });
-
     listener.onChannelRaidTo(userId, e => {
         raiders.push(e.raidingBroadcasterDisplayName);
     });
 
-    client.onRitual((channel, user, ritualInfo, msg) => {
-        if (channel === '#smaktalk94' && ritualInfo.ritualName === 'new_chatter') {
-            command.auto(Autochat.NEW, client, channel, context.displayName);
+    listener.onStreamOffline(userId, e => {
+        greetedUsers = {};
+    });
+
+    const client = new ChatClient({ authProvider, channels: [ process.env.CHANNEL_NAME ] });
+    client.connect();
+
+    // whisperChat(authProvider, client);
+
+    client.onAuthenticationSuccess(() => {
+        channels['#smaktalk94'] = true;
+        console.log('Authentication successful!');
+    });
+
+    client.onAuthenticationFailure((text, retryCount) => {
+        console.log(text);
+        console.log(retryCount);
+        console.log('------------');
+    });
+
+    client.onJoin(async (channel, user) => {
+        if (channel === '#smaktalk94') {
+            const joinedChannel = channel.replace('#', '');
+            command.auto(Autochat.JOINED, client, channel, joinedChannel);
+        } else {
+            const channelUser = await apiClient.users.getUserByName(channel.substring(1));
+            const channelSettings = await apiClient.chat.getSettings(channelUser.id);
+            emoteOnlyMode = channelSettings.emoteOnlyModeEnabled;
+            followerOnlyMode = channelSettings.followerOnlyModeEnabled;
+            subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
+            channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
         }
     });
+
+    client.onJoinFailure((channel, reason) => {
+        console.log(`Failed to join ${channel} for following reason:`);
+        console.log(reason);
+    });
     
-    client.onMessage(async (channel, user, text, msg) => {      
+    client.onMessage(async (channel, user, text, msg) => {
         const context = msg.userInfo;
         const commandName = text.trim();
 
         if (context.displayName === 'TheSmakBot') { return; }
     
         if (commandName.startsWith('$')) {
-            switch (commandName.split(' ')[0]) {
-                case '$channel':
-                    await command.channels(client, channel, commandName, context);
-                    break;
-                case '$drawing':
-                case '$enter':
-                    command.entries(client, channel, commandName, context);
-                    break;
-                case '$raid':
-                    command.raids(commandName);
-                    break;
-                case '$streamer':
-                    command.streamers(commandName);
-                    break;
-                default:
-                    await command.general(client, channel, commandName, context);
+            if (channels[channel]) {
+                switch (commandName.split(' ')[0]) {
+                    case '$channel':
+                        command.channels(client, channel, commandName, context);
+                        break;
+                    case '$drawing':
+                    case '$enter':
+                        command.entries(client, channel, commandName, context);
+                        break;
+                    case '$raid':
+                        command.raids(commandName);
+                        break;
+                    case '$streamer':
+                        command.streamers(commandName);
+                        break;
+                    default:
+                        command.general(client, channel, commandName, context);
+                }
+            } else {
+                const helixUser = await apiClient.users.getUserByName(user);
+                const mode = emoteOnlyMode ? 'emote-only' : followerOnlyMode ? 'follower-only' : 'subscriber-only';
+                apiClient.whispers.sendWhisper(userId, helixUser.id, `${channel.substring(1)} has enabled ${mode} mode in their chat`);
             }
         }
 
@@ -92,18 +118,24 @@ const main = async () => {
         }
     });
 
-    client.onAuthenticationSuccess(() => {
-        console.log('Authentication successful!');
+    client.onMessageFailed((channel, reason) => {
+        console.log(`Failed to message in ${channel.substring(1)}'s chat for following reason:`);
+        console.log(reason);
     });
 
-    client.onAuthenticationFailure((text, retryCount) => {
-        console.log(text);
-        console.log(retryCount);
-        console.log('------------');
+    client.onPart((channel, user) => {
+        const partedChannel = channel.replace('#', '');
+        command.auto(Autochat.PARTED, client, '#smaktalk94', partedChannel);
     });
 
-    listener.onStreamOffline(userId, e => {
-        greetedUsers = {};
+    client.onRitual((channel, user, ritualInfo, msg) => {
+        if (channel === '#smaktalk94' && ritualInfo.ritualName === 'new_chatter') {
+            command.auto(Autochat.NEW, client, channel, context.displayName);
+        }
+    });
+
+    process.on('uncaughtException', error => {
+        console.log(error);
     });
 };
 
