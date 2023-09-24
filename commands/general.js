@@ -19,8 +19,6 @@ const general = async (client, channel, command, context) => {
         case '$hug':
             (args.length > 1) ? await client.action(channel, `${context.displayName} gives a big, friendly hug to ${args[1]} (but only if ${args[1]} accepts)`) : await client.say(channel, `gives a big, friendly hug to @${context.displayName}`);
             break;
-        default:
-            await client.say(channel, `@${context.displayName} Command not found`);
     }
 };
 

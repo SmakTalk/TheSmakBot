@@ -50,6 +50,7 @@ const main = async () => {
     client.onAuthenticationSuccess(() => {
         channels['#smaktalk94'] = true;
         console.log('Authentication successful!');
+        console.log('------------');
     });
 
     client.onAuthenticationFailure((text, retryCount) => {
@@ -59,22 +60,22 @@ const main = async () => {
     });
 
     client.onJoin(async (channel, user) => {
-        if (channel === '#smaktalk94') {
-            const joinedChannel = channel.replace('#', '');
-            command.auto(Autochat.JOINED, client, channel, joinedChannel);
-        } else {
+        if (channel !== '#smaktalk94') {
             const channelUser = await apiClient.users.getUserByName(channel.substring(1));
             const channelSettings = await apiClient.chat.getSettings(channelUser.id);
             emoteOnlyMode = channelSettings.emoteOnlyModeEnabled;
             followerOnlyMode = channelSettings.followerOnlyModeEnabled;
             subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
             channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
+            const joinedChannel = channel.replace('#', '');
+            command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
         }
     });
 
     client.onJoinFailure((channel, reason) => {
         console.log(`Failed to join ${channel} for following reason:`);
         console.log(reason);
+        console.log('------------');
     });
     
     client.onMessage(async (channel, user, text, msg) => {
@@ -121,6 +122,7 @@ const main = async () => {
     client.onMessageFailed((channel, reason) => {
         console.log(`Failed to message in ${channel.substring(1)}'s chat for following reason:`);
         console.log(reason);
+        console.log('------------');
     });
 
     client.onPart((channel, user) => {
@@ -136,6 +138,7 @@ const main = async () => {
 
     process.on('uncaughtException', error => {
         console.log(error);
+        console.log('------------');
     });
 };
 
