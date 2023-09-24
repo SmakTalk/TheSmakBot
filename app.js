@@ -68,7 +68,7 @@ const main = async () => {
             subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
             channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
             const joinedChannel = channel.replace('#', '');
-            command.auto(Autochat.JOINED, client, channel, joinedChannel);
+            command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
         }
     });
 
