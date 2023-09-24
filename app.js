@@ -59,16 +59,15 @@ const main = async () => {
     });
 
     client.onJoin(async (channel, user) => {
-        if (channel === '#smaktalk94') {
-            const joinedChannel = channel.replace('#', '');
-            command.auto(Autochat.JOINED, client, channel, joinedChannel);
-        } else {
+        if (channel !== '#smaktalk94') {
             const channelUser = await apiClient.users.getUserByName(channel.substring(1));
             const channelSettings = await apiClient.chat.getSettings(channelUser.id);
             emoteOnlyMode = channelSettings.emoteOnlyModeEnabled;
             followerOnlyMode = channelSettings.followerOnlyModeEnabled;
             subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
             channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
+            const joinedChannel = channel.replace('#', '');
+            command.auto(Autochat.JOINED, client, channel, joinedChannel);
         }
     });
 
