@@ -27,7 +27,7 @@ const channels = async (client, channel, command, context) => {
             case 'part':
             case 'remove':
                 if (args[2]) {
-                    if (args[2] === 'smaktalk94') {
+                    if (args[2].toLowerCase() === 'smaktalk94') {
                         await client.say(channel, `I'm sorry, ${context.displayName}. I'm afraid I can't do that MrDestructoid`);
                     } else {
                         const list = client.currentChannels;
