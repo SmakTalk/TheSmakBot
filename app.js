@@ -102,6 +102,11 @@ const main = async () => {
         console.log('------------');
     });
 
+    client.onJoinFailure((channel, reason) => {
+        console.log(`Failed to join ${channel} for following reason:`);
+        console.log(reason);
+    });
+
     listener.onStreamOffline(userId, e => {
         greetedUsers = {};
     });
