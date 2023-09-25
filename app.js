@@ -13,6 +13,8 @@ let { greetedUsers, raiders } = require('./constants/users.js');
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 
+global.messageFailed = false;
+
 const main = async () => {
     const userId = process.env.USER_ID;
     const channels = {};
@@ -67,6 +69,7 @@ const main = async () => {
             followerOnlyMode = channelSettings.followerOnlyModeEnabled;
             subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
             channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
+            global.messageFailed = !channels[channel];
             const joinedChannel = channel.replace('#', '');
             command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
         }
@@ -120,6 +123,7 @@ const main = async () => {
     });
 
     client.onMessageFailed((channel, reason) => {
+        global.messageFailed = true;
         console.log(`Failed to message in ${channel.substring(1)}'s chat for following reason:`);
         console.log(reason);
         console.log('------------');

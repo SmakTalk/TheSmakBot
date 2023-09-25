@@ -31,13 +31,15 @@ const entries = (client, channel, command, context) => {
                             entriesList = [];
                             const time = (args[2] && Number.isInteger(parseInt(args[2]))) ? args[2] * 60000 : 0;
                             if (isOpen) {
-                                client.say(channel, `${context.displayName} There is a drawing already in progress`);
+                                client.say(channel, `${context.displayName} There is a drawing already in progress. Enter for a chance to win by typing $enter in the chat!`);
                             } else {
-                                isOpen = true;
                                 client.say(channel, `A new drawing started! Enter for a chance to win by typing $enter in the chat!`);
-                                if (time > 0) {
-                                    client.say(channel, `A name will be randomly drawn in ${time / 60000} ${(time === 60000) ? 'minute' : 'minutes'}`);
-                                    drawing = setTimeout(drawWinner, time, client, channel);
+                                if (!global.messageFailed) {
+                                    isOpen = true;
+                                    if (time > 0) {
+                                        client.say(channel, `A name will be randomly drawn in ${time / 60000} ${(time === 60000) ? 'minute' : 'minutes'}`);
+                                        drawing = setTimeout(drawWinner, time, client, channel);
+                                    }
                                 }
                             }
                             break;
