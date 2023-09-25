@@ -34,7 +34,17 @@ const channels = async (client, channel, command, context) => {
                         const list = client.currentChannels;
                         if (list.includes('#' + target.toLowerCase())) {
                             client.part(target);
-                            console.log(`Partedd channel: ${target}`);
+                            console.log(`Parted channel: ${target}`);
+                            console.log('------------');
+                        } else if ('all' === target.toLowerCase()) {
+                            let listStr = list[0].replace('#', '');
+                            list.forEach((val) => {
+                                if (val !== '#smaktalk94') {
+                                    listStr += ', ' + val.replace('#', '');
+                                    client.part(val);
+                                }
+                            });
+                            console.log(`Parted channels: ${listStr}`);
                             console.log('------------');
                         }
                     }
