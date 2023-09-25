@@ -13,6 +13,8 @@ let { greetedUsers, raiders } = require('./constants/users.js');
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 
+global.messageFailed = false;
+
 const main = async () => {
     const userId = process.env.USER_ID;
     const channels = {};
@@ -59,14 +61,18 @@ const main = async () => {
         console.log('------------');
     });
 
+    client.onEmoteOnly((channel, enabled) => {
+        channels[channel] = !enabled;
+    });
+
+    client.onFollowersOnly((channel, enabled, delay) => {
+        channels[channel] = !enabled;
+    });
+
     client.onJoin(async (channel, user) => {
         if (channel !== '#smaktalk94') {
-            const channelUser = await apiClient.users.getUserByName(channel.substring(1));
-            const channelSettings = await apiClient.chat.getSettings(channelUser.id);
-            emoteOnlyMode = channelSettings.emoteOnlyModeEnabled;
-            followerOnlyMode = channelSettings.followerOnlyModeEnabled;
-            subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
-            channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
+            await checkChannelPermissions(channel);
+            global.messageFailed = !channels[channel];
             const joinedChannel = channel.replace('#', '');
             command.auto(Autochat.JOINED, client, '#smaktalk94', joinedChannel);
         }
@@ -120,6 +126,7 @@ const main = async () => {
     });
 
     client.onMessageFailed((channel, reason) => {
+        global.messageFailed = true;
         console.log(`Failed to message in ${channel.substring(1)}'s chat for following reason:`);
         console.log(reason);
         console.log('------------');
@@ -136,10 +143,23 @@ const main = async () => {
         }
     });
 
+    client.onSubsOnly((channel, enabled) => {
+        channels[channel] = !enabled;
+    });
+
     process.on('uncaughtException', error => {
         console.log(error);
         console.log('------------');
     });
+
+    const checkChannelPermissions = async (channel) => {
+        const channelUser = await apiClient.users.getUserByName(channel.substring(1));
+        const channelSettings = await apiClient.chat.getSettings(channelUser.id);
+        emoteOnlyMode = channelSettings.emoteOnlyModeEnabled;
+        followerOnlyMode = channelSettings.followerOnlyModeEnabled;
+        subscriberOnlyMode = channelSettings.subscriberOnlyModeEnabled;
+        channels[channel] = !emoteOnlyMode && !followerOnlyMode && !subscriberOnlyMode;
+    };
 };
 
 main();
