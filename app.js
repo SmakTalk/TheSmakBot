@@ -4,7 +4,7 @@ const { ApiClient } = require('@twurple/api');
 const { ChatClient } = require('@twurple/chat');
 const { EventSubWsListener } = require('@twurple/eventsub-ws');
 const smakapi = require('./api/smakapi.js');
-// const whisperChat = require('./api/twitchapi.js');
+const whisperChat = require('./api/whisperchat.js');
 const command = require('./commands');
 const Autochat = require('./constants/autochat.js');
 const http = require('./constants/http.js');
@@ -47,7 +47,7 @@ const main = async () => {
     const client = new ChatClient({ authProvider, channels: [ process.env.CHANNEL_NAME ] });
     client.connect();
 
-    // whisperChat(authProvider, client);
+    whisperChat(authProvider, client, apiClient);
 
     client.onAuthenticationSuccess(() => {
         channels['#smaktalk94'] = true;
