@@ -17,7 +17,7 @@ const entries = (client, channel, command, context) => {
                     client.say(channel, (args[1]) ? `${entry} has already won a previous drawing` : `${entry} You have already won a previous drawing`);
                 } else {
                     entriesList.push(entry);
-                    client.say(channel, (args[1]) ? `${entry} has been successfully entered` : `${entry} Your name has been successfully entered`);
+                    client.say(channel, (args[1]) ? `@${entry} has been successfully entered` : `@${entry} Your name has been successfully entered`);
                 }
             } else {
                 client.say(channel, `${context.displayName} There is no drawing currently in progress`);
