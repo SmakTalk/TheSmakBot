@@ -10,10 +10,13 @@ const auto = async (condition, client, channel, user) => {
             await client.say(channel, `Hi @${user} HeyGuys`);
             greetedUsers[user] = 1;
             break;
+        case 'first_mod':
+            await client.say(channel, `Hi @${user} ModLove`);
+            greetedUsers[user] = 1;
+            break;
         case 'raider':
             await client.say(channel, `Thank you so much for the raid @${user}! We really appreciate you bringing your community here!`);
-            const index = raiders.indexOf(user);
-            raiders.splice(index, 1);
+            raiders.splice(raiders.indexOf(user), 1);
             greetedUsers[user] = 1;
             break;
         case 'joined':
