@@ -116,7 +116,7 @@ const main = async () => {
             }
         }
 
-        if (channel === '#smaktalk94' && context.displayName !== 'StreamElements' || context.displayName !== 'Sery_Bot' || context.displayName !== process.env.CHANNEL_NAME) {
+        if (channel === '#smaktalk94' && context.displayName !== 'StreamElements' && context.displayName !== 'Sery_Bot' && context.displayName !== process.env.CHANNEL_NAME) {
             if (raiders.includes(context.displayName)) {
                 command.auto(Autochat.RAIDER, client, channel, context.displayName);
             } else if (context.isMod && greetedUsers[context.displayName] !== 1) {
