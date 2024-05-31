@@ -98,6 +98,7 @@ const main = async () => {
                         break;
                     case '$drawing':
                     case '$enter':
+                    case '$exit':
                         command.entries(client, channel, commandName, context);
                         break;
                     case '$raid':

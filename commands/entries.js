@@ -2,7 +2,7 @@ const authorizedUsers = require('../constants/authorized');
 
 let drawing;
 let entriesList = [];
-let isOpen = false; // drawing open for entries
+let isOpen = false;
 let winnersList = [];
 
 const entries = (client, channel, command, context) => {
@@ -10,6 +10,9 @@ const entries = (client, channel, command, context) => {
     switch (args[0]) {
         case '$enter':
             enterDrawing(args[1], client, channel, context);
+            break;
+        case '$exit':
+            exitDrawing(args[1], client, channel, context);
             break;
         case '$drawing':
             if (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName)) {
@@ -54,6 +57,21 @@ const enterDrawing = (rawEntry, client, channel, context) => {
         } else {
             entriesList.push(entry);
             client.say(channel, (rawEntry) ? `@${entry} has been successfully entered` : `@${entry} Your name has been successfully entered`);
+        }
+    } else {
+        client.say(channel, `${context.displayName} There is no drawing currently in progress`);
+    }
+};
+
+const exitDrawing = (rawEntry, client, channel, context) => {
+    if (isOpen) {
+        const entry = (rawEntry && (context.badges.has('moderator') || context.badges.has('broadcaster') || authorizedUsers.includes(context.userName))) ? formatEntry(rawEntry) : context.displayName;
+        const index = entriesList.indexOf(entry);
+        if (index !== -1) {
+            entriesList.splice(index, 1);
+            client.say(channel, (rawEntry) ? `@${entry} has been successfully removed from the drawing` : `@${entry} Your name has been successfully removed from the drawing`);
+        } else {
+            client.say(channel, (rawEntry) ? `@${entry} is not in the current drawing` : `@${entry} Your name is not in the current drawing`);
         }
     } else {
         client.say(channel, `${context.displayName} There is no drawing currently in progress`);
