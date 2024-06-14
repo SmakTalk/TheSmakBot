@@ -29,7 +29,14 @@ const main = async () => {
             onRefresh: async (userId, newTokenData) => await smakapi('/token', http.POST, newTokenData)
         }
     );
-    authProvider.addUser(userId, JSON.parse(await smakapi('/token', http.GET)), ['chat']);
+    const initialToken = await smakapi('/token', http.GET);
+    if (initialToken.startsWith('{')) {
+        authProvider.addUser(userId, JSON.parse(initialToken), ['chat']);
+    } else {
+        //TODO: handle error
+        console.log('Tokon error');
+        process.exit();
+    }
 
     const apiClient = new ApiClient({ authProvider });
 
