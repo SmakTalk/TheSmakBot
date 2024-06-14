@@ -1,4 +1,6 @@
 const authorizedUsers = require('../constants/authorized');
+const http = require('../constants/http.js');
+const smakapi = require('../api/smakapi.js');
 
 let drawing;
 let entriesList = [];
@@ -110,7 +112,7 @@ const stopDrawing = (client, channel, context) => {
     }
 };
 
-const drawWinner = (client, target) => {
+const drawWinner = async (client, target) => {
     const winner = entriesList[Math.floor(Math.random() * entriesList.length)];
     console.log('Entries: ' + entriesList);
     if (winner) {
@@ -118,6 +120,7 @@ const drawWinner = (client, target) => {
         winnersList.push(winner);
         entriesList.splice(entriesList.indexOf(winner), 1);
         console.log('Winners: ' + winnersList);
+        await smakapi('/winners', http.POST, {'list': winnersList});
     } else {
         client.say(target, `No one entered the giveaway`);
     }
